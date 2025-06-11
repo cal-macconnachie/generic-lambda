@@ -1,0 +1,74 @@
+name: generic-lambda
+on:
+  push:
+    branches:
+      - development
+      - production
+jobs:
+  set-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Ensure Yarn is installed
+        run: corepack enable
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: set-env
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Ensure Yarn is installed
+        run: corepack enable
+
+      - name: Install AWS CDK
+        run: yarn global add aws-cdk
+
+      - name: Install project dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Test
+        run: yarn test --ci --runInBand
+
+      - name: CDK Synth
+        run: cdk synth -c envName=${{ github.ref_name }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Check if CDK is bootstrapped
+        id: cdk_bootstrap_check
+        run: |
+          if aws cloudformation describe-stacks --stack-name "CDKToolkit" > /dev/null 2>&1; then
+            echo "cdk_bootstrapped=true" >> $GITHUB_OUTPUT
+          else
+            echo "cdk_bootstrapped=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: CDK Bootstrap
+        if: steps.cdk_bootstrap_check.outputs.cdk_bootstrapped == 'false'
+        run: cdk bootstrap -c envName=${{ github.ref_name }}
+
+      - name: CDK Deploy
+        run: cdk deploy --all --require-approval never -c envName=${{ github.ref_name }}
+
