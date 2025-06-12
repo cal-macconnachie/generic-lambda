@@ -4,11 +4,15 @@ import { CognitoStack } from './services/cognito/cognito-stack'
 import { DdbTablesStack } from './services/dynamodb/ddb-tables-stack'
 import { LambdaStack } from './services/lambda/lambda-stack'
 import { ApiGatewayStack } from './services/apigateway/apigateway-stack'
-import { appName } from './constants'
+import { appName as constantsAppName } from './constants'
 export class GenericLambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps & { envName?: string }) {
     super(scope, id, props)
     const envName = props?.envName || 'dev'
+    let appName = constantsAppName
+    if (envName === 'test') {
+      appName = 'test'
+    }
     if (!appName || appName.trim() === '') {
       throw new Error('appName must be defined in constants.ts')
     }

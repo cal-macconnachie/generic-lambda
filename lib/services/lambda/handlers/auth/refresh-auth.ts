@@ -4,9 +4,9 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 const cognitoClient = new CognitoIdentityProviderClient({})
-const CLIENT_ID = process.env.USER_POOL_CLIENT_ID || ''
 
 export const handler = async (event: APIGatewayProxyEvent) => {
+  const CLIENT_ID = process.env.USER_POOL_CLIENT_ID
   if (!CLIENT_ID) {
     return {
       statusCode: 500,
