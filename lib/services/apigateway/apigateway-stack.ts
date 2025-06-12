@@ -1,12 +1,13 @@
 import * as cdk from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import { aws_apigateway as apiGW } from 'aws-cdk-lib'
+import { UserPool, UserPoolClient } from 'aws-cdk-lib/aws-cognito'
 
 export interface ApiGatewayStackProps extends cdk.StackProps {
   appName: string
   envName: string
-  userPool: import('aws-cdk-lib/aws-cognito').UserPool
-  userPoolClient: import('aws-cdk-lib/aws-cognito').UserPoolClient
+  userPool: UserPool
+  userPoolClient: UserPoolClient
 }
 
 export class ApiGatewayStack extends cdk.Stack {

@@ -1,6 +1,13 @@
 # Generic Lambda
 
-A generic AWS Lambda function template using TypeScript, AWS CDK, and SAM CLI. This project provides a starting point for building serverless applications on AWS with modern TypeScript tooling and infrastructure-as-code.
+A modern, extensible AWS Lambda/API template using TypeScript, AWS CDK, and GitHub Actions. This project lets you define your infrastructure, DynamoDB tables, Lambda functions, and API endpoints as code—then deploy everything to AWS with a single commit, all managed through GitHub.
+
+- **No local AWS setup required:** Deploy from GitHub using Actions and repository secrets.
+- **Infrastructure as code:** Define tables and endpoints in TypeScript files.
+- **Easy extensibility:** Add new DynamoDB tables or Lambda endpoints by editing a single file each.
+- **Modern tooling:** TypeScript, AWS CDK, Jest, ESLint, Prettier, and Yarn.
+
+See below for step-by-step deployment, customization, and extension instructions.
 
 ## Technologies Used
 - **TypeScript**: Strongly-typed JavaScript for application and infrastructure code
