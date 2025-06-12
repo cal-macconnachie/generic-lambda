@@ -30,12 +30,44 @@ corepack enable
 yarn install
 ```
 
-### 6. Local Development (API Emulation)
+### 3. Local Development (API Emulation)
 To run the Lambda locally using SAM:
 ```sh
 yarn dev
 ```
 This will build, synthesize the CDK stack, and start the SAM local API on port 3001.
+
+## From zero to hero
+
+Deploy this Lambda to AWS using only GitHub—no local setup required!
+
+### 1. Fork the repository
+- Click the **Fork** button on the top right of the [GitHub repo](https://github.com/cal-macconnachie/generic-lambda) to create your own copy.
+
+### 2. Add GitHub Action secrets
+- In your forked repo, go to **Settings > Secrets and variables > Actions**.
+- Add the following secrets:
+  - `AWS_ACCESS_KEY_ID`
+  - `AWS_SECRET_ACCESS_KEY`
+  - `AWS_DEFAULT_REGION`
+
+### 3. Create a new branch called `development`
+- On GitHub, go to the main page of your forked repo.
+- Click the branch dropdown, type `development`, and create the new branch.
+
+### 4. Set your app name in `lib/constants.ts`
+- In the `development` branch, open the file `lib/constants.ts`.
+- Set the `appName` value to your desired application name. For example:
+  ```typescript
+  export const appName: string = 'my-cool-app'
+  ```
+- Commit this change to the `development` branch. This commit will trigger the deployment workflow.
+
+### 5. Let GitHub Actions deploy for you
+- The included GitHub Actions workflow will automatically lint, test, synthesize, and deploy your stack to AWS whenever you push to the `development` or `production` branches.
+- Monitor progress in the **Actions** tab of your repo.
+
+That's it! You can deploy and manage this Lambda entirely from GitHub.
 
 ## Deployment
 Deployment is managed via AWS CDK and automated with GitHub Actions.

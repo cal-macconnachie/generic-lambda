@@ -9,6 +9,9 @@ export class GenericLambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps & { envName?: string }) {
     super(scope, id, props)
     const envName = props?.envName || 'dev'
+    if (!appName || appName.trim() === '') {
+      throw new Error('appName must be defined in constants.ts')
+    }
 
     const ddbTables = new DdbTablesStack(this, `DdbTablesStack-${envName}`, { appName, envName })
 

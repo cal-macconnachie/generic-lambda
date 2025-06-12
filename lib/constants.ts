@@ -1,1 +1,1 @@
-export const appName = 'GenericLambdaApp'
+export const appName: string = ''
