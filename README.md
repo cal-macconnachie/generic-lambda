@@ -87,6 +87,64 @@ Deployment is managed via AWS CDK and automated with GitHub Actions.
 - `yarn cdk` — Run AWS CDK CLI
 - `yarn clean` — Remove build artifacts
 
+## Adding DynamoDB Tables
+
+To add new DynamoDB tables to your stack:
+
+1. Open `lib/services/dynamodb/ddb-table-definitions.ts`.
+2. Add a new object to the `ddbTableDefinitions` array. Each object defines a table, its keys, billing mode, and any global secondary indexes.
+
+Example:
+```typescript
+{
+  tableName: 'my-table',
+  partitionKey: { name: 'id', type: 'S' },
+  sortKey: { name: 'createdAt', type: 'N' },
+  billingMode: 'PAY_PER_REQUEST',
+  globalSecondaryIndexes: [
+    {
+      indexName: 'status-gsi',
+      partitionKey: { name: 'status', type: 'S' },
+      projectionType: 'ALL'
+    }
+  ]
+}
+```
+- Supported key types: `'S'` (string), `'N'` (number), `'B'` (binary)
+- You can add as many tables as needed.
+
+## Adding Lambda Functions and Endpoints
+
+To add new Lambda functions and API endpoints:
+
+1. Open `lib/services/lambda/lambda-endpoint-definitions.ts`.
+2. Add a new object to the `lambdaEndpointDefinitions` array. Each object defines an endpoint, its HTTP method, path, handler, authentication, and more.
+
+Example:
+```typescript
+{
+  name: 'MyFunction',
+  path: 'my-function',
+  method: 'POST',
+  handler: 'my-folder/my-function.ts',
+  auth: 'cognito', // or 'apiKey' or 'none'
+  cors: true,
+  description: 'Description of what this endpoint does',
+  tables: ['my-table'], // DynamoDB tables this function interacts with
+  environment: ['MY_ENV_VAR'], // Environment variables to inject
+  iamPolicies: [
+    {
+      actions: ['dynamodb:PutItem'],
+      resources: ['*']
+    }
+  ]
+}
+```
+- The `handler` field should point to the TypeScript file implementing the Lambda function.
+- The `auth` field controls access: `'none'`, `'apiKey'`, or `'cognito'`.
+- Add any required IAM permissions, environment variables, and tables.
+- For more details, see the comments in the file.
+
 ## License
 Apache-2.0
 
