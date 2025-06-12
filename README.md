@@ -94,6 +94,34 @@ Deployment is managed via AWS CDK and automated with GitHub Actions.
 - `yarn cdk` — Run AWS CDK CLI
 - `yarn clean` — Remove build artifacts
 
+## Micro Frontend for API Testing
+
+A modern micro frontend UI is included for testing your Lambda endpoints locally. This UI allows you to interactively send requests to any defined API endpoint, view responses, and experiment with headers and request bodies—all from your browser.
+
+### How to Use
+
+1. **Start the local dev server and UI:**
+   ```sh
+   yarn dev:ui
+   ```
+   This will run both the backend (on port 3001) and the micro frontend UI (on port 3000).
+
+2. **Open the UI:**
+   - Visit [http://localhost:3000/ui](http://localhost:3000/ui) in your browser.
+
+3. **Test your endpoints:**
+   - The UI will automatically fetch all Lambda endpoint definitions from your project.
+   - Select an endpoint, set the HTTP method, add headers or a request body as needed, and submit the request.
+   - The response will be displayed in real time.
+
+### Features
+- Auto-discovers all endpoints from your `lambda-endpoint-definitions.ts` file.
+- Lets you set HTTP method, headers, and request body.
+- Displays formatted JSON responses.
+- Great for local development and debugging before deploying to AWS.
+
+---
+
 ## Adding DynamoDB Tables
 
 To add new DynamoDB tables to your stack:
