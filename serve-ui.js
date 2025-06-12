@@ -72,6 +72,6 @@ app.get('/lambda-endpoints.json', (req, res) => {
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Micro Postman UI: http://localhost:${PORT}/ui`);
+  console.log(`Micro Frontend UI: http://localhost:${PORT}/ui`);
   console.log(`Backend/API proxied to http://localhost:3001`);
 });
