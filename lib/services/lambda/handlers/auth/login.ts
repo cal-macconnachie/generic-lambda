@@ -11,7 +11,9 @@ const cognitoClient = new CognitoIdentityProviderClient({})
 const CLIENT_ID = process.env.USER_POOL_CLIENT_ID || ''
 
 export const handler = async (event: APIGatewayProxyEvent) => {
+  console.log('Login event received:', event)
   const { body } = event
+  console.log('Login event body:', body)
   const { username, password } = JSON.parse(body || '{}')
   if (!username || !password) {
     return {

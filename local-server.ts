@@ -6,7 +6,6 @@ import dotenv from 'dotenv'
 import path from 'path'
 import { lambdaEndpointDefinitions } from './lib/services/lambda/lambda-endpoint-definitions'
 import { Request, Response } from 'express'
-import chalk from 'chalk'
 
 // Load env vars from .env.local
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
@@ -70,37 +69,39 @@ for (const def of lambdaEndpointDefinitions) {
     }
   })
   endpointRows.push(
-    `${chalk.bold.cyan(method.padEnd(6))}  ${chalk.green(`http://localhost:3001${routePath}`.padEnd(40))}  ${chalk.yellow(def.handler)}`
+    `${method.padEnd(6)}  http://localhost:3001${routePath.padEnd(40)}  ${def.handler}`
   )
 }
 
-if (endpointRows.length) {
-  // Prettier output with color and table-like formatting
-  console.log(chalk.bold.magenta('\nRegistered Lambda Endpoints:'))
+// Dynamically import chalk only for local dev output
+async function printLambdaEndpoints(endpointRows: string[]) {
+  const chalk = (await import('chalk')).default
+  if (endpointRows.length) {
+    console.log(chalk.bold.magenta('\nRegistered Lambda Endpoints:'))
 
-  console.log()
+    console.log()
 
-  // Print table border
-  console.log(
-    chalk.gray('──────────────────────────────────────────────────────────────────────────────')
-  )
+    console.log(
+      chalk.gray('──────────────────────────────────────────────────────────────────────────────')
+    )
 
-  // Print table header
-  console.log(`${chalk.bold('METHOD')}  ${chalk.bold('URL'.padEnd(40))}  ${chalk.bold('HANDLER')}`)
+    console.log(
+      `${chalk.bold('METHOD')}  ${chalk.bold('URL'.padEnd(40))}  ${chalk.bold('HANDLER')}`
+    )
 
-  // Print table border
-  console.log(
-    chalk.gray('──────────────────────────────────────────────────────────────────────────────')
-  )
+    console.log(
+      chalk.gray('──────────────────────────────────────────────────────────────────────────────')
+    )
 
-  // Print each endpoint row
-  endpointRows.forEach((row) => console.log(row))
+    endpointRows.forEach((row) => console.log(row))
 
-  // Print table border
-  console.log(
-    chalk.gray('──────────────────────────────────────────────────────────────────────────────\n')
-  )
+    console.log(
+      chalk.gray('──────────────────────────────────────────────────────────────────────────────\n')
+    )
+  }
 }
+
+printLambdaEndpoints(endpointRows)
 
 const PORT = 3001
 app.listen(PORT, () => {
