@@ -414,7 +414,7 @@
         const endpoints = await res.json();
         lambdaEndpointDefinitions = endpoints;
         endpointSelect.innerHTML = '<option value="">-- Select Endpoint --</option>' +
-          endpoints.map(e => `<option value="${e.path}" data-method="${e.method}">${e.name} [${e.method}]</option>`).join('');
+          endpoints.map(e => `<option value="${e.path ?? e.handler}" data-method="${e.method ?? 'POST'}">${e.name} [${e.method ?? 'POST'}]</option>`).join('');
         endpointSelect.disabled = false;
       } catch (err) {
         endpointSelect.innerHTML = '<option value="">(Failed to load endpoints)</option>';
@@ -426,10 +426,15 @@
     const methodSelect = document.getElementById('method');
     const bodyStep = document.querySelectorAll('.form-step')[2];
     endpointSelect.addEventListener('change', function() {
-      const selected = lambdaEndpointDefinitions.find(e => e.path === this.value);
+      const selected = lambdaEndpointDefinitions.find(e => (e.path ?? e.handler) === this.value);
       if (selected) {
-        urlInput.value = '/api/' + selected.path;
-        methodSelect.value = selected.method;
+        console.log('Selected endpoint:', selected);
+        if (selected.path) {
+          urlInput.value = '/api/' + selected.path;
+        } else {
+          urlInput.value = '/api/' + selected.handler.replace(/\.ts$/, '');
+        }
+        methodSelect.value = selected.method ?? 'POST';
       } else {
         urlInput.value = '';
       }

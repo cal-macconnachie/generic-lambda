@@ -40,34 +40,37 @@ function clearRequireCache(modulePath: string) {
 // Register routes for each endpoint definition
 const endpointRows: string[] = []
 for (const def of lambdaEndpointDefinitions) {
-  const routePath = '/' + def.path
-  const method = def.method.toUpperCase()
+  const routePath = '/' + (def.path ?? def.handler.replace(/\.ts$/, ''))
+  const method = (def.method ?? 'post').toUpperCase()
   const handlerPath = path.join(__dirname, 'lib', 'services', 'lambda', 'handlers', def.handler)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ;(app as any)[def.method.toLowerCase()](routePath, async (req: Request, res: Response) => {
-    try {
-      clearRequireCache(require.resolve(handlerPath))
-      const handlerModule = require(handlerPath)
-      const handler = handlerModule.handler || handlerModule.default
-      if (!handler) {
-        return res.status(500).json({ error: `No handler export found in ${def.handler}` })
+  ;(app as any)[(def.method ?? 'post').toLowerCase()](
+    routePath,
+    async (req: Request, res: Response) => {
+      try {
+        clearRequireCache(require.resolve(handlerPath))
+        const handlerModule = require(handlerPath)
+        const handler = handlerModule.handler || handlerModule.default
+        if (!handler) {
+          return res.status(500).json({ error: `No handler export found in ${def.handler}` })
+        }
+        const event = def.method ? makeLambdaEvent(req) : (req.body ?? {})
+        const context = {}
+        const result = await handler(event, context)
+        if (result && typeof result === 'object' && 'statusCode' in result) {
+          return res
+            .status(result.statusCode)
+            .set(result.headers || {})
+            .send(result.body)
+        } else {
+          return res.json(result)
+        }
+      } catch (err) {
+        return res.status(500).json({ error: err instanceof Error ? err.message : err })
       }
-      const event = makeLambdaEvent(req)
-      const context = {}
-      const result = await handler(event, context)
-      if (result && typeof result === 'object' && 'statusCode' in result) {
-        return res
-          .status(result.statusCode)
-          .set(result.headers || {})
-          .send(result.body)
-      } else {
-        return res.json(result)
-      }
-    } catch (err) {
-      return res.status(500).json({ error: err instanceof Error ? err.message : err })
     }
-  })
+  )
   endpointRows.push(
     `${method.padEnd(6)}  http://localhost:3001${routePath.padEnd(40)}  ${def.handler}`
   )

@@ -7,7 +7,7 @@ export async function handler({ count }: { count: number }): Promise<{ status: s
   console.log('End of step function reached with count:', count)
   // You can also return a status or result if needed
   // For example, returning a success status
-  if (count !== 0) {
+  if (Number(count) !== 0) {
     throw new Error(`Expected count to be 0, but got ${count}`)
   }
   console.log('success')

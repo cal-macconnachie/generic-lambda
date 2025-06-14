@@ -67,7 +67,7 @@ app.use((req, res, next) => {
 // Serve endpoint definitions as JSON for the UI to fetch
 app.get('/lambda-endpoints.json', (req, res) => {
   // Only send the fields needed by the UI
-  res.json(lambdaEndpointDefinitions.map(({ name, path, method, description }) => ({ name, path, method, description })));
+  res.json(lambdaEndpointDefinitions.map(({ name, path, method, description, handler }) => ({ name, path, method, description, handler })));
 });
 
 const PORT = 3000;
