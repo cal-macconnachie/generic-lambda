@@ -21,7 +21,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       body: JSON.stringify({ message: 'Logout successful' }),
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
+        'Access-Control-Allow-Credentials': true,
+        'Content-Type': 'application/json'
       }
     }
   } catch (error) {
@@ -30,7 +31,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       body: JSON.stringify({ error: error instanceof Error ? error.message : 'Logout failed' }),
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
+        'Access-Control-Allow-Credentials': true,
+        'Content-Type': 'application/json'
       }
     }
   }

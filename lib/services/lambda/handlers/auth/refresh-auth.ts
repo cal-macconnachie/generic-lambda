@@ -13,7 +13,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       body: JSON.stringify({ message: 'CLIENT_ID environment variable is not set' }),
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
+        'Access-Control-Allow-Credentials': true,
+        'Content-Type': 'application/json'
       }
     }
   }
@@ -26,7 +27,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       body: JSON.stringify({ message: 'Refresh token is required' }),
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
+        'Access-Control-Allow-Credentials': true,
+        'Content-Type': 'application/json'
       }
     }
   }

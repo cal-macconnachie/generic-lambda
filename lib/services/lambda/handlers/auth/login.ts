@@ -21,7 +21,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       body: JSON.stringify({ message: 'Username and password are required' }),
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true
+        'Access-Control-Allow-Credentials': true,
+        'Content-Type': 'application/json'
       }
     }
   }
