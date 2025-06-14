@@ -2,7 +2,7 @@ import { Stack, StackProps } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import { aws_stepfunctions as sfn, aws_apigateway as apiGW } from 'aws-cdk-lib'
 import { stepFunctionDefinitions } from './step-function-definitions'
-import { LambdaStack, LambdaStackProps } from '../lambda/lambda-stack'
+import { LambdaStack } from '../lambda/lambda-stack'
 import { createDefaultNodejsFunction, addApiResourceWithApiKey } from '../lambda/lambda-defaults'
 import * as path from 'node:path'
 
@@ -10,6 +10,8 @@ export interface StepFunctionsStackProps extends StackProps {
   appName: string
   envName: string
   lambdaStack: LambdaStack
+  api: apiGW.RestApi
+  cognitoAuthorizer: apiGW.CognitoUserPoolsAuthorizer
 }
 
 export class StepFunctionsStack extends Stack {
@@ -17,14 +19,10 @@ export class StepFunctionsStack extends Stack {
 
   constructor(scope: Construct, id: string, props: StepFunctionsStackProps) {
     super(scope, id, props)
-    const { appName, envName, lambdaStack } = props
+    const { appName, envName, lambdaStack, api, cognitoAuthorizer } = props
 
     // HACK: Access LambdaStack constructor props via a property for cross-stack resource sharing
     // You may want to refactor LambdaStack to expose api and cognitoAuthorizer as public readonly properties
-    // @ts-expect-error: accessing private property for cross-stack integration
-    const lambdaStackProps: LambdaStackProps = lambdaStack.props
-    const api = lambdaStackProps.api
-    const cognitoAuthorizer = lambdaStackProps.cognitoAuthorizer
 
     for (const def of stepFunctionDefinitions) {
       const definition = def.build(lambdaStack)

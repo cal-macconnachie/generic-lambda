@@ -56,7 +56,9 @@ export class GenericLambdaStack extends cdk.Stack {
     new StepFunctionsStack(this, `StepFunctionsStack-${envName}`, {
       appName,
       envName,
-      lambdaStack
+      lambdaStack,
+      api,
+      cognitoAuthorizer
     })
     // ADD any other resources or methods as needed below here -------------------------
   }
