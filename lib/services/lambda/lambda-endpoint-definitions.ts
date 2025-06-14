@@ -87,17 +87,17 @@ export const lambdaEndpointDefinitions: LambdaEndpointDefinition[] = [
   },
   {
     name: 'sfnStart',
-    handler: 'step-functions/start.ts',
+    handler: 'initial-step-function/start.ts',
     description: 'Start of a Step Function execution'
   },
   {
     name: 'sfnLogic',
-    handler: 'step-functions/logic.ts',
+    handler: 'initial-step-function/logic.ts',
     description: 'Logic for Step Function execution'
   },
   {
     name: 'sfnEnd',
-    handler: 'step-functions/end.ts',
+    handler: 'initial-step-function/end.ts',
     description: 'End of a Step Function execution'
   }
 ]

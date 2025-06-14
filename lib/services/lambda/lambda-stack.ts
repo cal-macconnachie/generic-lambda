@@ -46,7 +46,7 @@ export class LambdaStack extends Construct {
           }
         }
       }
-      const fn = createDefaultNodejsFunction(this, `${def.path}-${envName}`, {
+      const fn = createDefaultNodejsFunction(this, `${def.name}-${appName}-${envName}`, {
         entry: path.join(__dirname, 'handlers', def.handler),
         functionName: `${def.name}-${appName}-${envName}`,
         description: def.description || `Lambda for ${def.path}`,

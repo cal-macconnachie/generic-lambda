@@ -43,8 +43,8 @@ export const stepFunctionDefinitions: StepFunctionDefinition[] = [
       loopChoice.when(sfn.Condition.numberEquals('$.count', 0), endTask)
       loopChoice.otherwise(logicTask.next(loopChoice))
 
-      // Chain: start -> logic -> choice
-      return startTask.next(logicTask).next(loopChoice)
+      // Chain: start -> choice
+      return startTask.next(loopChoice)
     },
     initiator: {
       name: 'ExampleLoopStepFunctionInitiator',
