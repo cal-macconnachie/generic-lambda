@@ -1,4 +1,4 @@
-export async function end({ count }: { count: number }): Promise<{ status: string }> {
+export async function handler({ count }: { count: number }): Promise<{ status: string }> {
   // This function is called at the end of the step function
   // Here you can perform any final actions, like cleaning up resources or logging
   // For example, you might want to log the completion of the step function

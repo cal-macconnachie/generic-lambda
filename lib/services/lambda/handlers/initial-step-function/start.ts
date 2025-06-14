@@ -1,5 +1,5 @@
 // This file is part of the "initial-step-function" service.
-export async function start(event: { count: number }) {
+export async function handler(event: { count: number }) {
   // Pass the count to logic
   if (event.count < 0) {
     throw new Error('Count must be a non-negative integer')
