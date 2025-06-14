@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib'
 import { Template } from 'aws-cdk-lib/assertions'
 import { GenericLambdaStack } from '../lib/generic-lambda-stack'
-import { ApiGatewayStack } from '../lib/services/apigateway/apigateway-stack'
+import { ApiGatewayStack } from '../lib/services/api-gateway/apigateway-stack'
 import { CognitoStack } from '../lib/services/cognito/cognito-stack'
 import { DdbTablesStack } from '../lib/services/dynamodb/ddb-tables-stack'
 

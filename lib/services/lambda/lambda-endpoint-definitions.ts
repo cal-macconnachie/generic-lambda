@@ -1,11 +1,11 @@
-interface LambdaEndpointDefinition {
+export interface LambdaEndpointDefinition {
   name: string
-  path: string
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+  path?: string
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
   handler: string
-  auth: 'none' | 'apiKey' | 'cognito'
+  auth?: 'none' | 'apiKey' | 'cognito'
   cors?: boolean // Enable CORS for this endpoint
-  description?: string
+  description: string
   environment?: string[]
   iamPolicies?: Array<{
     actions: string[]
@@ -13,7 +13,7 @@ interface LambdaEndpointDefinition {
   }>
   tables?: string[] // List of DynamoDB table names this endpoint interacts with
 }
-export const lambdaEndpointDefinitions = [
+export const lambdaEndpointDefinitions: LambdaEndpointDefinition[] = [
   {
     name: 'Register',
     path: 'register',
@@ -84,5 +84,20 @@ export const lambdaEndpointDefinitions = [
     handler: 'initial-function.ts',
     auth: 'none',
     description: 'Initial function endpoint'
+  },
+  {
+    name: 'sfnStart',
+    handler: 'step-functions/start.ts',
+    description: 'Start of a Step Function execution'
+  },
+  {
+    name: 'sfnLogic',
+    handler: 'step-functions/logic.ts',
+    description: 'Logic for Step Function execution'
+  },
+  {
+    name: 'sfnEnd',
+    handler: 'step-functions/end.ts',
+    description: 'End of a Step Function execution'
   }
-] as LambdaEndpointDefinition[]
+]

@@ -2,21 +2,7 @@ import { Construct } from 'constructs'
 import { aws_apigateway as apiGW, aws_iam, aws_dynamodb as dynamodb } from 'aws-cdk-lib'
 import { createDefaultNodejsFunction, addApiResourceWithApiKey } from './lambda-defaults'
 import * as path from 'node:path'
-import { lambdaEndpointDefinitions } from './lambda-endpoint-definitions'
-
-// Define a type for endpoint definitions
-export interface LambdaEndpointDefinition {
-  name: string
-  path: string
-  method: string
-  handler: string
-  description?: string
-  environment?: string[]
-  iamPolicies?: Array<{ actions: string[]; resources: string[] }>
-  auth?: 'apiKey' | 'cognito' | 'none'
-  tables?: string[] // List of DynamoDB table names this endpoint interacts with
-  cors?: boolean // Enable CORS for this endpoint
-}
+import { LambdaEndpointDefinition, lambdaEndpointDefinitions } from './lambda-endpoint-definitions'
 
 export interface LambdaStackProps {
   api: apiGW.RestApi
@@ -89,25 +75,34 @@ export class LambdaStack extends Construct {
           }
         }
       }
-      const resource = api.root.addResource(def.path)
-      const integration = new apiGW.LambdaIntegration(fn)
-      // Enable CORS if specified
-      if (def.cors) {
-        resource.addCorsPreflight({
-          allowOrigins: apiGW.Cors.ALL_ORIGINS,
-          allowMethods: [def.method],
-          allowHeaders: apiGW.Cors.DEFAULT_HEADERS
-        })
+      // if one of path or method is defned we should warn that the api gateway resource will not be created
+      if ((def.path && !def.method) || (!def.path && def.method)) {
+        console.warn(
+          `Lambda ${def.name} is missing path or method, API Gateway resource will not be created`
+        )
       }
-      if (def.auth === 'apiKey') {
-        addApiResourceWithApiKey(resource, integration, def.method)
-      } else if (def.auth === 'cognito') {
-        resource.addMethod(def.method, integration, {
-          authorizationType: apiGW.AuthorizationType.COGNITO,
-          authorizer: cognitoAuthorizer
-        })
-      } else {
-        resource.addMethod(def.method, integration)
+      if (def.path && def.method) {
+        // Create API Gateway resource and method
+        const resource = api.root.addResource(def.path)
+        const integration = new apiGW.LambdaIntegration(fn)
+        // Enable CORS if specified
+        if (def.cors) {
+          resource.addCorsPreflight({
+            allowOrigins: apiGW.Cors.ALL_ORIGINS,
+            allowMethods: [def.method],
+            allowHeaders: apiGW.Cors.DEFAULT_HEADERS
+          })
+        }
+        if (def.auth === 'apiKey') {
+          addApiResourceWithApiKey(resource, integration, def.method)
+        } else if (def.auth === 'cognito') {
+          resource.addMethod(def.method, integration, {
+            authorizationType: apiGW.AuthorizationType.COGNITO,
+            authorizer: cognitoAuthorizer
+          })
+        } else {
+          resource.addMethod(def.method, integration)
+        }
       }
     }
   }

@@ -3,7 +3,8 @@ import { Construct } from 'constructs'
 import { CognitoStack } from './services/cognito/cognito-stack'
 import { DdbTablesStack } from './services/dynamodb/ddb-tables-stack'
 import { LambdaStack } from './services/lambda/lambda-stack'
-import { ApiGatewayStack } from './services/apigateway/apigateway-stack'
+import { ApiGatewayStack } from './services/api-gateway/apigateway-stack'
+import { StepFunctionsStack } from './services/step-functions/step-functions-stack'
 import { appName as constantsAppName } from './constants'
 export class GenericLambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps & { envName?: string }) {
@@ -43,13 +44,19 @@ export class GenericLambdaStack extends cdk.Stack {
     }
 
     // Build Lambdas and API resources using LambdaStack
-    new LambdaStack(this, `LambdaStack-${envName}`, {
+    const lambdaStack = new LambdaStack(this, `LambdaStack-${envName}`, {
       api,
       envVars,
       cognitoAuthorizer,
       envName,
       appName,
       tables: ddbTables.tables
+    })
+    // Build Step Functions using StepFunctionsStack
+    new StepFunctionsStack(this, `StepFunctionsStack-${envName}`, {
+      appName,
+      envName,
+      lambdaStack
     })
     // ADD any other resources or methods as needed below here -------------------------
   }
